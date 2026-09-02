@@ -6,9 +6,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables
+// Load environment variables from project root .env
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
-dotenv.config();
 
 const SAFETY_SYSTEM_INSTRUCTION = `You are SafeAid AI, an emergency first-aid and campus safety guidance assistant.
 
@@ -60,10 +59,10 @@ You MUST return ONLY a strictly valid JSON object matching this schema:
 }`;
 
 const CANDIDATE_MODELS = [
-  process.env.GEMINI_MODEL || "gemini-3.6-flash",
-  "gemini-3.6-flash",
-  "gemini-3.5-flash-lite",
-  "gemini-3.7-flash"
+  process.env.GEMINI_MODEL || "gemini-2.5-flash",
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+  "gemini-1.5-flash"
 ];
 
 // Deduplicate candidate models

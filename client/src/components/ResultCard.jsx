@@ -196,7 +196,7 @@ export default function ResultCard({
           <div className="space-y-2.5">
             {immediate_actions.map((action, idx) => (
               <div
-                key={idx}
+                key={action.slice(0, 40)}
                 className="flex items-start gap-3 rounded-lg border border-emerald-500/20 bg-[#09151c]/80 p-3 text-sm text-slate-100"
               >
                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-emerald-950">
@@ -219,9 +219,9 @@ export default function ResultCard({
               </h4>
             </div>
             <ul className="space-y-2">
-              {avoid.map((item, idx) => (
+              {avoid.map((item) => (
                 <li
-                  key={idx}
+                  key={item.slice(0, 40)}
                   className="rounded-lg border border-red-500/20 bg-red-950/30 p-2.5 text-xs text-red-200"
                 >
                   {item}
@@ -239,9 +239,9 @@ export default function ResultCard({
               </h4>
             </div>
             <ul className="space-y-2">
-              {when_to_seek_help.map((item, idx) => (
+              {when_to_seek_help.map((item) => (
                 <li
-                  key={idx}
+                  key={item.slice(0, 40)}
                   className="rounded-lg border border-amber-500/20 bg-amber-950/30 p-2.5 text-xs text-amber-200"
                 >
                   {item}

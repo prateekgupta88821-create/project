@@ -34,6 +34,9 @@ export default function InputCard({
         name: file.name,
         size: (file.size / 1024).toFixed(0) + " KB"
       });
+      // Reset so the same file can be re-selected after clearing
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      if (cameraInputRef.current) cameraInputRef.current.value = "";
     };
     reader.readAsDataURL(file);
   };
@@ -143,7 +146,7 @@ export default function InputCard({
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    accept="image/jpeg,image/png,image/webp"
                     className="hidden"
                     onChange={(e) => handleFile(e.target.files?.[0])}
                   />
