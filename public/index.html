@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeAid - AI First-Aid & Health Assistant</title>
+  <meta name="description" content="SafeAid: Fast, multilingual, image-supported first-aid guidance powered by Google Gemini API.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Emergency Alert Banner -->
+  <aside class="emergency-banner" id="emergencyBanner" role="alert" aria-label="Emergency warning">
+    <div class="banner-content">
+      <div class="banner-icon-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      </div>
+      <div class="banner-text">
+        <strong>Life-Threatening Emergency?</strong> Call <span class="hotline-pill">911</span> (US), <span class="hotline-pill">112</span> (EU/India), or <span class="hotline-pill">999</span> (UK) immediately. SafeAid is for informational first-aid reference only.
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Application Wrapper -->
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="logo-shield">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">SafeAid</h1>
+          <p class="brand-subtitle">AI-Powered Multilingual First-Aid Assistant</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <div class="api-status-badge" id="apiStatusBadge" title="Gemini API Connection Status">
+          <span class="status-dot" id="statusDot"></span>
+          <span class="status-label" id="statusLabel">Checking API...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-layout">
+      <!-- Input Panel -->
+      <section class="card input-card" aria-labelledby="inputCardTitle">
+        <div class="card-header">
+          <h2 id="inputCardTitle" class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            Describe the Health Concern
+          </h2>
+          <span class="helper-badge">Text, Image, or Both</span>
+        </div>
+
+        <form id="healthForm" class="health-form" novalidate>
+          <!-- Quick Symptom Tags -->
+          <div class="quick-tags-container">
+            <span class="quick-tags-label">Quick topics:</span>
+            <div class="tags-group">
+              <button type="button" class="tag-btn" data-symptom="Minor burn from hot water on hand, skin is red with slight stinging pain">Burn (Minor)</button>
+              <button type="button" class="tag-btn" data-symptom="Small kitchen cut on finger, bleeding lightly">Minor Cut</button>
+              <button type="button" class="tag-btn" data-symptom="Twisted ankle while jogging, mild swelling and pain when putting weight">Sprained Ankle</button>
+              <button type="button" class="tag-btn" data-symptom="Red itchy swollen bump from an insect or bee sting">Insect Sting</button>
+              <button type="button" class="tag-btn" data-symptom="Accidental nosebleed that started 5 minutes ago">Nosebleed</button>
+            </div>
+          </div>
+
+          <!-- Text Description Input -->
+          <div class="form-group">
+            <label for="symptomTextInput" class="form-label">
+              Symptoms / Situation Details
+              <span class="optional-label">(Any language supported)</span>
+            </label>
+            <textarea
+              id="symptomTextInput"
+              name="text"
+              class="form-textarea"
+              rows="4"
+              placeholder="e.g. 'I spilled hot water on my forearm, it is red and blistering slightly. What immediate first-aid steps should I take?'"
+            ></textarea>
+          </div>
+
+          <!-- Multimodal Image Upload Area -->
+          <div class="form-group">
+            <label class="form-label">
+              Injury / Symptom Photo
+              <span class="optional-label">(JPEG, PNG, WEBP)</span>
+            </label>
+            <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload injury photo for analysis">
+              <input type="file" id="imageFileInput" accept="image/jpeg,image/png,image/webp,image/gif,image/heic" class="file-input-hidden">
+              <div class="dropzone-empty" id="dropzoneEmpty">
+                <div class="dropzone-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                </div>
+                <div class="dropzone-text">
+                  <strong>Click or Drag & Drop Photo Here</strong>
+                  <p>Clear, well-lit photo of the injury or rash (optional)</p>
+                </div>
+              </div>
+
+              <!-- Image Preview Box -->
+              <div class="dropzone-preview hidden" id="dropzonePreview">
+                <img id="previewImage" src="" alt="Selected injury preview">
+                <div class="preview-overlay">
+                  <span id="previewFilename" class="preview-filename">image.jpg</span>
+                  <button type="button" id="removeImageBtn" class="btn-remove-image" title="Remove image">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Language Preference Selection -->
+          <div class="form-group">
+            <label for="languageSelect" class="form-label">
+              Response Language
+              <span class="optional-label">(Select preferred language)</span>
+            </label>
+            <div class="select-wrapper">
+              <select id="languageSelect" name="preferredLanguage" class="form-select">
+                <option value="">Auto-Detect / English</option>
+                <option value="English">English</option>
+                <option value="Spanish">Español (Spanish)</option>
+                <option value="Hindi">हिन्दी (Hindi)</option>
+                <option value="French">Français (French)</option>
+                <option value="Arabic">العربية (Arabic)</option>
+                <option value="Mandarin Chinese">中文 (Mandarin)</option>
+                <option value="German">Deutsch (German)</option>
+                <option value="Portuguese">Português (Portuguese)</option>
+                <option value="Russian">Русский (Russian)</option>
+                <option value="Japanese">日本語 (Japanese)</option>
+                <option value="Bengali">বাংলা (Bengali)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button type="submit" id="analyzeBtn" class="btn btn-primary">
+              <span class="btn-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+              </span>
+              <span class="btn-text">Analyze with SafeAid</span>
+            </button>
+            <button type="button" id="clearBtn" class="btn btn-secondary">Clear</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Output / Results Panel -->
+      <section class="card output-card" aria-labelledby="resultsCardTitle">
+        <!-- Initial Blank State -->
+        <div class="empty-results-state" id="emptyState">
+          <div class="empty-icon-circle">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </div>
+          <h3>Ready to Assist You</h3>
+          <p>Describe symptoms or upload a photo. SafeAid will deliver structured first-aid steps, critical precautions, and emergency advice.</p>
+          <div class="feature-pills">
+            <span>🛡️ Non-definitive Observations</span>
+            <span>🌐 Multilingual</span>
+            <span>⚡ Emergency Triage</span>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state hidden" id="loadingState">
+          <div class="spinner"></div>
+          <h4 id="loadingTitle">Evaluating health input...</h4>
+          <p>Processing text & multimodal visual data with Google Gemini</p>
+        </div>
+
+        <!-- Interactive Language Request Modal / Card (Requirement 17) -->
+        <div class="language-prompt-card hidden" id="languagePromptCard">
+          <div class="prompt-icon">🌐</div>
+          <h3 id="promptHeading">Which language would you prefer for the explanation and guidance?</h3>
+          <p>An image was uploaded without text. Please select your preferred language to continue with the customized first-aid report:</p>
+          <div class="language-buttons-grid" id="languageButtonsGrid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Analysis Results Card -->
+        <div class="results-content hidden" id="resultsContent">
+          <!-- Results Header & Badges -->
+          <div class="results-meta-bar">
+            <div class="urgency-badge" id="urgencyBadge">Routine First-Aid</div>
+            <div class="detected-lang-pill" id="langBadge">English</div>
+          </div>
+
+          <!-- Emergency Alert Box (Shown if isEmergency or high urgency) -->
+          <div class="emergency-alert-callout hidden" id="emergencyCallout">
+            <div class="callout-icon">🚨</div>
+            <div class="callout-content">
+              <strong>Emergency Situation Identified:</strong>
+              <p id="emergencyAdviceText"></p>
+            </div>
+          </div>
+
+          <!-- Visual Observation Warning (Shown if image was evaluated) -->
+          <div class="visual-note-box hidden" id="visualNoteBox">
+            <div class="visual-icon">📷</div>
+            <div class="visual-text">
+              <strong>Visual Observation Note:</strong>
+              <p id="visualObservationsText"></p>
+            </div>
+          </div>
+
+          <!-- Possible Conditions to Consider -->
+          <div class="result-section">
+            <h4 class="section-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Possible Conditions (Non-diagnostic considerations)
+            </h4>
+            <ul class="result-list conditions-list" id="possibleConditionsList"></ul>
+          </div>
+
+          <!-- Step-by-Step First Aid Remedies -->
+          <div class="result-section">
+            <h4 class="section-title text-success">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              Immediate First-Aid Steps & Remedies
+            </h4>
+            <ol class="result-numbered-list" id="firstAidStepsList"></ol>
+          </div>
+
+          <!-- What NOT to do (Safety Precautions) -->
+          <div class="result-section">
+            <h4 class="section-title text-danger">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+              Critical Precautions: What NOT to Do
+            </h4>
+            <ul class="result-list precautions-list" id="whatNotToDoList"></ul>
+          </div>
+
+          <!-- When to See a Doctor -->
+          <div class="result-section">
+            <h4 class="section-title text-warning">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7.5" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+              When to Consult a Healthcare Professional
+            </h4>
+            <ul class="result-list doctor-list" id="whenToSeekDoctorList"></ul>
+          </div>
+
+          <!-- Medical Disclaimer Footer -->
+          <div class="clinical-disclaimer-box" id="clinicalDisclaimerBox">
+            <div class="disclaimer-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              Clinical & Legal Safety Notice
+            </div>
+            <p id="disclaimerText"></p>
+          </div>
+        </div>
+
+        <!-- Error Card -->
+        <div class="error-card hidden" id="errorCard">
+          <div class="error-icon">⚠️</div>
+          <h4 id="errorTitle">Analysis Error</h4>
+          <p id="errorMessage"></p>
+          <button type="button" class="btn btn-secondary btn-sm" id="errorRetryBtn">Dismiss</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- App Footer -->
+    <footer class="app-footer">
+      <p>SafeAid &bull; Powered by Google Gemini API (@google/genai) &bull; Designed for emergency readiness and first-aid education.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

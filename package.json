@@ -1,0 +1,36 @@
+{
+  "name": "safeaid-ai",
+  "version": "1.0.0",
+  "description": "SafeAid AI - Multimodal Campus Health and Safety Companion powered by Google Gemini API",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,magenta\" \"npm run server\" \"npm run client\"",
+    "server": "node server/index.js",
+    "client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "test": "node tests/test-gemini.js"
+  },
+  "keywords": [
+    "safeaid",
+    "first-aid",
+    "campus-safety",
+    "health-companion",
+    "google-genai",
+    "gemini",
+    "multimodal",
+    "react",
+    "vite",
+    "tailwind"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/genai": "^2.20.0",
+    "concurrently": "^9.1.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.0.1"
+  }
+}
